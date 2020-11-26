@@ -86,7 +86,6 @@ impl Vec3 {
 
 // Type aliases for Vec3
 pub type Point3 = Vec3;
-pub type Color = Vec3;
 
 // vec3 Utility Functions
 impl fmt::Display for Vec3 {
@@ -179,18 +178,4 @@ pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
 
 pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.length()
-}
-
-pub fn write_color(
-    stream: &mut dyn std::io::Write,
-    pixel_color: Color,
-) -> Result<(), std::io::Error> {
-    // Write the translated [0,255] value of each color component.
-    writeln!(
-        stream,
-        "{} {} {}",
-        (255.999 * pixel_color.x()) as i32,
-        (255.999 * pixel_color.y()) as i32,
-        (255.999 * pixel_color.z()) as i32
-    )
 }

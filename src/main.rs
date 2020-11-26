@@ -1,8 +1,10 @@
 #![allow(dead_code)]
 
-mod math;
+mod vec3;
+mod color;
 
-use math::*;
+use vec3::*;
+use color::*;
 
 fn main() {
     // Image
