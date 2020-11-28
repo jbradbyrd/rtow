@@ -1,3 +1,5 @@
+use crate::rtweekend::*;
+
 pub type Color = crate::vec3::Vec3;
 
 pub fn write_color(
@@ -19,8 +21,8 @@ pub fn write_color(
     writeln!(
         out,
         "{} {} {}",
-        (256.0 * r.clamp(0.0, 0.999)) as i32,
-        (256.0 * g.clamp(0.0, 0.999)) as i32,
-        (256.0 * b.clamp(0.0, 0.999)) as i32
+        (256.0 * clamp(r, 0.0, 0.999)) as i32,
+        (256.0 * clamp(g, 0.0, 0.999)) as i32,
+        (256.0 * clamp(b, 0.0, 0.999)) as i32
     )
 }

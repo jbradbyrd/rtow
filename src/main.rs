@@ -7,19 +7,20 @@ mod hittable_list;
 mod ray;
 mod sphere;
 mod vec3;
+mod rtweekend;
 
 use camera::*;
 use color::*;
 use hittable::*;
 use hittable_list::*;
-use rand::Rng;
 use ray::*;
 use sphere::*;
 use vec3::*;
+use rtweekend::*;
 
 fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
     let mut rec = HitRecord::default();
-    if world.hit(r, 0.0, std::f64::INFINITY, &mut rec) {
+    if world.hit(r, 0.0, INFINITY, &mut rec) {
         return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
     }
     let unit_direction = unit_vector(r.direction());
@@ -45,15 +46,13 @@ fn main() {
     // Render
     print!("P3\n{} {}\n255\n", image_width, image_height);
 
-    let mut rng = rand::thread_rng();
-
     for j in (0..image_height).rev() {
         eprint!("\rScanlines remaining {}", j);
         for i in 0..image_width {
             let mut pixel_color = Color::default();
             for _ in 0..samples_per_pixel {
-                let u = (i as f64 + rng.gen_range(0.0, 1.0)) / (image_width - 1) as f64;
-                let v = (j as f64 + rng.gen_range(0.0, 1.0)) / (image_height - 1) as f64;
+                let u = (i as f64 + random_unit_double()) / (image_width - 1) as f64;
+                let v = (j as f64 + random_unit_double()) / (image_height - 1) as f64;
                 let r = cam.get_ray(u, v);
                 pixel_color += ray_color(&r, &world);
             }
