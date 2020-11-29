@@ -1,3 +1,4 @@
+use crate::rtweekend::*;
 use std::fmt;
 use std::ops;
 
@@ -7,12 +8,32 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub const fn zero() -> Vec3 {
-        Vec3 { e: [0.0, 0.0, 0.0] }
+    pub const fn zero() -> Self {
+        Self { e: [0.0, 0.0, 0.0] }
     }
 
-    pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
-        Vec3 { e: [x, y, z] }
+    pub const fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { e: [x, y, z] }
+    }
+
+    pub fn random_unit() -> Self {
+        Self {
+            e: [
+                random_unit_double(),
+                random_unit_double(),
+                random_unit_double(),
+            ],
+        }
+    }
+
+    pub fn random(min: f64, max: f64) -> Self {
+        Self {
+            e: [
+                random_double(min, max),
+                random_double(min, max),
+                random_double(min, max),
+            ],
+        }
     }
 
     pub fn x(&self) -> f64 {
@@ -178,4 +199,28 @@ pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
 
 pub fn unit_vector(v: Vec3) -> Vec3 {
     v / v.length()
+}
+
+pub fn random_in_unit_sphere() -> Vec3 {
+    loop {
+        let p = Vec3::random(-1.0, 1.0);
+        if p.length_squared() >= 1.0 {
+            continue;
+        }
+        return p;
+    }
+}
+
+pub fn random_unit_vector() -> Vec3 {
+    unit_vector(random_in_unit_sphere())
+}
+
+pub fn random_in_hemisphere(normal: Vec3) -> Vec3 {
+    let in_unit_sphere = random_in_unit_sphere();
+    if dot(in_unit_sphere, normal) > 0.0 {
+        // In the same hemisphere as the normal
+        in_unit_sphere
+    } else {
+        -in_unit_sphere
+    }
 }
