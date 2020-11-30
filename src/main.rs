@@ -14,6 +14,7 @@ use color::*;
 use hittable::*;
 use hittable_list::*;
 use ray::*;
+use rayon::prelude::*;
 use rtweekend::*;
 use sphere::*;
 use std;
@@ -58,20 +59,31 @@ fn main() {
     let cam = Camera::new();
 
     // Render
+    let mut scanline = Vec::<Color>::new();
+    scanline.reserve_exact(image_width);
+
     print!("P3\n{} {}\n255\n", image_width, image_height);
 
     for j in (0..image_height).rev() {
         eprint!("\rScanlines remaining {:<5}", j);
         io::stderr().flush().unwrap();
-        for i in 0..image_width {
-            let mut pixel_color = Color::default();
-            for _ in 0..samples_per_pixel {
-                let u = (i as f64 + random_unit_double()) / (image_width - 1) as f64;
-                let v = (j as f64 + random_unit_double()) / (image_height - 1) as f64;
-                let r = cam.get_ray(u, v);
-                pixel_color += ray_color(&r, &world, max_depth);
-            }
-            write_color(&mut io::stdout(), pixel_color, samples_per_pixel).unwrap();
+
+        (0..image_width)
+            .into_par_iter()
+            .map(|i| {
+                let mut pixel_color = Color::default();
+                for _ in 0..samples_per_pixel {
+                    let u = (i as f64 + random_unit_double()) / (image_width - 1) as f64;
+                    let v = (j as f64 + random_unit_double()) / (image_height - 1) as f64;
+                    let r = cam.get_ray(u, v);
+                    pixel_color += ray_color(&r, &world, max_depth);
+                }
+                pixel_color
+            })
+            .collect_into_vec(&mut scanline);
+
+        for pixel in &scanline {
+            write_color(&mut io::stdout(), *pixel, samples_per_pixel).unwrap();
         }
     }
 
