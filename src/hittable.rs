@@ -1,7 +1,7 @@
 use crate::ray::*;
 use crate::vec3::*;
 
-#[derive(Copy, Clone, Default)]
+#[derive(Default)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
@@ -21,5 +21,5 @@ impl HitRecord {
 }
 
 pub trait Hittable: Send + Sync {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
 }

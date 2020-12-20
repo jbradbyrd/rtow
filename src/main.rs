@@ -28,8 +28,7 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
         return Color::zero();
     }
 
-    let mut rec = HitRecord::default();
-    if world.hit(r, 0.001, INFINITY, &mut rec) {
+    if let Some(rec) = world.hit(r, 0.001, INFINITY) {
         // lambert
         let target = rec.p + rec.normal + random_unit_vector();
         // hemispherical
