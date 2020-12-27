@@ -52,6 +52,7 @@ fn main() {
     let max_depth = 50;
 
     // World
+
     let material_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
     let material_center = Lambertian::new(Color::new(0.1, 0.2, 0.5));
     let material_left = Dielectric::new(1.5);
@@ -75,7 +76,7 @@ fn main() {
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
-        -0.4,
+        -0.45,
         &material_left,
     )));
     world.add(Box::new(Sphere::new(
@@ -85,7 +86,14 @@ fn main() {
     )));
 
     // Camera
-    let cam = Camera::new();
+
+    let cam = Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        aspect_ratio,
+    );
 
     // Render
     let mut scanline = Vec::<Color>::new();
